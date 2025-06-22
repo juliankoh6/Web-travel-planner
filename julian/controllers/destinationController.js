@@ -59,7 +59,7 @@ exports.saveDestination = async (req, res) => {
     });
 
     await dest.save();
-    console.log('✅ Saved:', dest);
+    console.log('Saved:', dest);
     res.status(201).json(dest);
   } catch (err) {
     console.error('Save error:', err.message);
