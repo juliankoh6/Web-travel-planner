@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import SearchForm from '../components/SearchForm';
-import DestinationList from '../components/DestinationList';
-import SavedList from '../components/SavedList';
+import SearchForm from '../pages/SearchForm';
+import DestinationList from '../pages/DestinationList';
+import SavedList from '../pages/SavedList';
 
 function Home() {
   const navigate = useNavigate();
