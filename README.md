@@ -5,7 +5,7 @@ Travel Finder is a travel explorer platform designed to assist you with travelli
 **Group Members:**
 
 1. Julian Koh Chee Yong
-2. Jayashree Eumalai
+2. Jayashree Elumalai
 3. Joey Wong Yee Rou
 
 
