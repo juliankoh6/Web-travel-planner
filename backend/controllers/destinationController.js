@@ -55,7 +55,8 @@ exports.saveDestination = async (req, res) => {
     const dest = new Destination({
       ...req.body,
       address: req.body.address || 'Unknown',
-      userID: userId
+      userID: userId,
+      notes: req.body.notes || '' // Add notes field if sent
     });
 
     await dest.save();
@@ -64,7 +65,6 @@ exports.saveDestination = async (req, res) => {
   } catch (err) {
     console.error('Save error:', err.message);
 
-    // Handle duplicate error
     if (err.code === 11000) {
       return res.status(400).json({ error: 'You already saved this location.' });
     }
@@ -72,6 +72,7 @@ exports.saveDestination = async (req, res) => {
     res.status(500).json({ error: 'Failed to save destination' });
   }
 };
+
 
 exports.getLearnInfo = async (req, res) => {
   const place = req.query.place;
@@ -111,5 +112,27 @@ exports.deleteDestination = async (req, res) => {
     res.json({ message: 'Destination deleted' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete destination' });
+  }
+};
+
+exports.updateNotes = async (req, res) => {
+  const { id } = req.params;
+  const { notes } = req.body;
+
+  try {
+    const updated = await Destination.findByIdAndUpdate(
+      id,
+      { notes },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Destination not found' });
+    }
+
+    res.json(updated);
+  } catch (err) {
+    console.error('❌ Error updating notes:', err.message);
+    res.status(500).json({ error: 'Failed to update notes' });
   }
 };
