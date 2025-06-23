@@ -8,7 +8,6 @@ const weatherRoutes = require('./routes/weather');
 const placeRoutes = require('./routes/places'); 
 const currencyRoutes = require('./routes/currency');
 const destinationRoutes = require('./routes/destinations');
-const attractionRoutes = require('./routes/attractions');
 const authRoutes = require('./routes/auth');
 
 // App setup
@@ -21,7 +20,6 @@ app.use('/api/weather', weatherRoutes);
 app.use('/api/places', placeRoutes);
 app.use('/api/currency', currencyRoutes);
 app.use('/api/destinations', destinationRoutes);
-app.use('/api', attractionRoutes);
 app.use('/api/auth', authRoutes); 
 
 // Connect to MongoDB and start server
