@@ -21,8 +21,8 @@ app.use('/api/weather', weatherRoutes);
 app.use('/api/places', placeRoutes);
 app.use('/api/currency', currencyRoutes);
 app.use('/api/destinations', destinationRoutes);
-app.use('/api', attractionRoutes); // This assumes your attraction routes handle paths like /attractions/:id
-app.use('/api/auth', authRoutes); // Only include once
+app.use('/api', attractionRoutes);
+app.use('/api/auth', authRoutes); 
 
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
