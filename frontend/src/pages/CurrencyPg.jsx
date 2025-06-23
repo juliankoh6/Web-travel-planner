@@ -1,85 +1,171 @@
+// frontend/src/pages/CurrencyPg.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import {
+  convertCurrency,
+  saveConversion,
+  getSavedConversions,
+  updateConversion,
+  deleteConversion
+} from '../api/currencyAPI';
 import './CurrencyPg.css';
 
 const CurrencyPg = () => {
-  const [from, setFrom] = useState('USD');
-  const [to, setTo] = useState('EUR');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
   const [amount, setAmount] = useState(1);
+  const [note, setNote] = useState('');
+  const [currencies, setCurrencies] = useState([]);
   const [result, setResult] = useState(null);
-  const [currencyList, setCurrencyList] = useState([]);
+  const [saved, setSaved] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [editNote, setEditNote] = useState('');
 
-  // Load currency codes on mount
+  const userID = localStorage.getItem("userID");
+
   useEffect(() => {
-    const fetchCurrencies = async () => {
-      try {
-        const res = await axios.get('/api/currency/list');
-        setCurrencyList(res.data);
-      } catch (err) {
-        console.error('Failed to load currency list', err);
-      }
-    };
-
     fetchCurrencies();
+    fetchSaved();
   }, []);
 
-  const handleConvert = async () => {
+  const fetchCurrencies = async () => {
     try {
-      const res = await axios.get('/api/currency', {
-        params: { from, to }
-      });
-
-      const rate = res.data.rate;
-      const converted = (amount * rate).toFixed(2);
-
-      setResult({
-        amount,
-        from,
-        to,
-        rate,
-        converted
-      });
+      const res = await fetch('/api/currency/codes');
+      const data = await res.json();
+      const codes = [...new Set(data)].sort();
+      setCurrencies(codes);
+      setFrom('USD');
+      setTo('MYR');
     } catch (err) {
-      console.error('Conversion failed:', err);
-      alert('Conversion failed');
+      console.error('Failed to fetch currencies');
     }
   };
 
+  const fetchSaved = async () => {
+    if (!userID) return;
+    const records = await getSavedConversions(userID);
+    setSaved(records);
+  };
+
+  const handleConvert = async () => {
+    if (!from || !to || !amount) return alert('Missing input');
+    const data = await convertCurrency(from, to, amount);
+    if (data) setResult(data);
+  };
+
+  const handleSave = async () => {
+    if (!result) return alert('Convert first before saving!');
+    const data = {
+      userID,
+      from,
+      to,
+      amount,
+      convertedAmount: result.converted,
+      note
+    };
+    await saveConversion(data);
+    setNote('');
+    setResult(null);
+    fetchSaved();
+  };
+
+
+  const handleDelete = async (id) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this saved conversion?");
+  if (!confirmDelete) return;
+
+  await deleteConversion(id);
+  fetchSaved();
+};
+
+
+  const handleEdit = (item) => {
+    setEditId(item._id);
+    setEditNote(item.note || '');
+  };
+
+  const handleUpdate = async (item) => {
+    await updateConversion(item._id, { ...item, note: editNote });
+    setEditId(null);
+    setEditNote('');
+    fetchSaved();
+  };
+
   return (
-    <div className="currency-container">
-      <h2>💱 Currency Converter</h2>
+    <div className="currency-page-wrapper">
+      <div className="currency-container">
+        <h2>💱 Currency Converter</h2>
+        <div style={{ marginBottom: '20px' }}>
+          <input
+            type="number"
+            value={amount}
+            min="0"
+            onChange={(e) => setAmount(e.target.value)}
+            style={{ padding: '8px', width: '80px', marginRight: '10px' }}
+          />
+          <select value={from} onChange={(e) => setFrom(e.target.value)} style={{ padding: '8px', marginRight: '10px' }}>
+            <option value="">From</option>
+            {currencies.map((cur) => (
+              <option key={cur} value={cur}>{cur}</option>
+            ))}
+          </select>
+          <select value={to} onChange={(e) => setTo(e.target.value)} style={{ padding: '8px', marginRight: '10px' }}>
+            <option value="">To</option>
+            {currencies.map((cur) => (
+              <option key={cur} value={cur}>{cur}</option>
+            ))}
+          </select>
+          <button onClick={handleConvert} style={{ padding: '8px 15px' }}>Convert</button>
+        </div>
 
-      <div style={{ marginBottom: '20px' }}>
-        <input
-          type="number"
-          value={amount}
-          min="0"
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Amount"
-          style={{ padding: '8px', marginRight: '10px' }}
-        />
-
-        <select value={from} onChange={(e) => setFrom(e.target.value)} style={{ padding: '8px', marginRight: '10px' }}>
-          {currencyList.map((code) => (
-            <option key={code} value={code}>{code}</option>
-          ))}
-        </select>
-
-        <select value={to} onChange={(e) => setTo(e.target.value)} style={{ padding: '8px', marginRight: '10px' }}>
-          {currencyList.map((code) => (
-            <option key={code} value={code}>{code}</option>
-          ))}
-        </select>
-
-        <button onClick={handleConvert} style={{ padding: '8px 15px' }}>Convert</button>
+        {result && (
+          <div style={{ marginBottom: '20px' }}>
+            <p><strong>{amount} {from}</strong> = <strong>{result.converted} {to}</strong></p>
+            <p>Rate: 1 {from} = {result.rate} {to}</p>
+            <input
+              type="text"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Add a note"
+              style={{ padding: '6px', width: '60%', marginRight: '10px' }}
+            />
+            <button onClick={handleSave}>Save</button>
+          </div>
+        )}
       </div>
 
-      {result && (
-        <div>
-          <p><strong>{result.amount} {result.from}</strong> = <strong>{result.converted} {result.to}</strong></p>
-          <p>Rate: 1 {result.from} = {result.rate} {result.to}</p>
+      <div className="saved-section">
+        <h3>📒 Saved Conversions</h3>
+        <div className="currency-card-container">
+          {saved.length === 0 ? (
+            <p>No saved conversions</p>
+          ) : (
+            saved.map((item) => (
+              <div key={item._id} className="currency-card">
+                <h4>{item.from} → {item.to}</h4>
+                <p>{item.amount} {item.from} = {item.convertedAmount} {item.to}</p>
+                <p><strong>Notes:</strong></p>
+                {editId === item._id ? (
+                  <>
+                    <textarea
+                      value={editNote}
+                      onChange={(e) => setEditNote(e.target.value)}
+                    />
+                    <button onClick={() => handleUpdate(item)} style={{ background: 'green', color: 'white' }}>OK</button>
+                  </>
+                ) : (
+                  <p>{item.note || 'No notes added.'}</p>
+                )}
+                <div className="button-group">
+                  {editId !== item._id && (
+                    <button onClick={() => handleEdit(item)} className="edit-btn">Edit</button>
+                  )}
+                  <button onClick={() => handleDelete(item._id)} className="delete-btn">Delete</button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
