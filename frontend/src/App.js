@@ -36,7 +36,6 @@ function App() {
 
         {/* Protected Routes */}
         <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/places" element={isAuthenticated ? <PlacesPg /> : <Navigate to="/login" />} />
         <Route path="/weather" element={isAuthenticated ? <WeatherPg /> : <Navigate to="/login" />} />
         <Route path="/currency" element={isAuthenticated ? <CurrencyPg /> : <Navigate to="/login" />} />
 
