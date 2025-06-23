@@ -1,6 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const SavedList = ({ saved, onDelete }) => {
+  const [notesMap, setNotesMap] = useState({});
+  const [editingNoteId, setEditingNoteId] = useState(null);
+
+  // Sync notes from saved data
+  useEffect(() => {
+    const initialNotes = {};
+    saved.forEach((place) => {
+      initialNotes[place._id] = place.notes || '';
+    });
+    setNotesMap(initialNotes);
+  }, [saved]);
+
+  const handleNoteChange = (id, text) => {
+    setNotesMap((prev) => ({ ...prev, [id]: text }));
+  };
+
+  const handleEditClick = (id) => {
+    setEditingNoteId(id);
+  };
+
+  const handleSaveNote = async (id) => {
+    try {
+      await axios.patch(`http://localhost:5000/api/destinations/saved/${id}/notes`, {
+        notes: notesMap[id] || ''
+      });
+      setEditingNoteId(null);
+      console.log('✅ Note saved to DB:', id);
+    } catch (err) {
+      console.error('❌ Failed to update note:', err.message);
+    }
+  };
+
   return (
     <div style={{ marginTop: '40px' }}>
       <h2>📌 Saved Destinations</h2>
@@ -30,6 +63,56 @@ const SavedList = ({ saved, onDelete }) => {
                 style={{ borderRadius: '6px', marginTop: '10px' }}
               />
             )}
+
+            {/* Notes Section */}
+            <div style={{ marginTop: '10px', width: '100%' }}>
+              <strong>📝 Notes:</strong>
+              {editingNoteId === place._id ? (
+                <div>
+                  <textarea
+                    rows={3}
+                    value={notesMap[place._id] || ''}
+                    onChange={(e) => handleNoteChange(place._id, e.target.value)}
+                    style={{ width: '100%', marginTop: '6px' }}
+                  />
+                  <button
+                    onClick={() => handleSaveNote(place._id)}
+                    style={{
+                      marginTop: '5px',
+                      padding: '4px 10px',
+                      backgroundColor: '#28a745',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    OK
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>
+                    {notesMap[place._id] || 'No notes added.'}
+                  </p>
+                  <button
+                    onClick={() => handleEditClick(place._id)}
+                    style={{
+                      marginTop: '5px',
+                      padding: '4px 10px',
+                      backgroundColor: '#ffc107',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Delete Button */}
             <button
               onClick={() => onDelete(place._id)}
               style={{
