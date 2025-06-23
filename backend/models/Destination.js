@@ -7,9 +7,12 @@ const destinationSchema = new mongoose.Schema({
   rating: String,
   reviews: String,
   price: String,
-  address: String,
   location_name: String,
-  userID: { type: String, required: true },
+  userID: String,
+  notes: {
+    type: String,
+    default: ''
+  },
   date_saved: {
     type: Date,
     default: Date.now,
@@ -20,4 +23,5 @@ const destinationSchema = new mongoose.Schema({
 destinationSchema.index({ title: 1, address: 1, userID: 1 }, { unique: true });
 
 module.exports = mongoose.model('Destination', destinationSchema);
+
 
