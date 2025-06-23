@@ -96,6 +96,7 @@ function Home() {
     localStorage.removeItem('token');
     localStorage.removeItem('userID');
     localStorage.removeItem('username');
+    window.dispatchEvent(new Event('storage'));
     navigate('/login');
   };
 
