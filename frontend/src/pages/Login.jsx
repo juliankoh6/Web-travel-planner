@@ -8,12 +8,6 @@ export default function Login({ setIsAuthenticated }) {
   const [form, setForm] = useState({ identifier: '', password: '' });
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loginDisabled, setLoginDisabled] = useState(true);
-
-  useEffect(() => {
-    const isFormValid = form.identifier.trim() && form.password.trim();
-    setLoginDisabled(!isFormValid || isSubmitting);
-  }, [form, isSubmitting]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,21 +15,34 @@ export default function Login({ setIsAuthenticated }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('username', res.data.user.username);
-      localStorage.setItem('userID', res.data.user.id);
-      setIsAuthenticated(true);
-      navigate('/');
-    } catch (err) {
-      setError('Login failed. Please check your credentials.');
-      setIsSubmitting(false);
-    }
-  };
+  //  validation
+  if (!form.identifier.trim() || !form.password.trim()) {
+    setError('All fields are required.');
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (form.password.length < 6) {
+    setError('Password must be at least 6 characters.');
+    setIsSubmitting(false);
+    return;
+  }
+
+  try {
+    const res = await axios.post('http://localhost:5000/api/auth/login', form);
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('username', res.data.user.username);
+    localStorage.setItem('userID', res.data.user.id);
+    setIsAuthenticated(true);
+    navigate('/');
+  } catch (err) {
+    setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div
@@ -85,7 +92,6 @@ export default function Login({ setIsAuthenticated }) {
 
           <button
             type="submit"
-            disabled={loginDisabled}
             style={{
               marginTop: 20,
               padding: '6px 12px',
