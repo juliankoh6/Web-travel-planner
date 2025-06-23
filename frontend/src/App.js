@@ -22,11 +22,17 @@ function App() {
   return (
     <Router>
       {isAuthenticated && (
-        <nav style={{ padding: '1rem', backgroundColor: '#f0f0f0' }}>
-          <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
-          <Link to="/weather" style={{ marginRight: '1rem' }}>Weather</Link>
-          <Link to="/currency" style={{ marginRight: '1rem' }}>Currency</Link>
-        </nav>
+      <nav style={{
+        padding: '1rem',
+        backgroundColor: '#0077cc',
+        fontSize: '18px',
+        fontWeight: '500',
+        fontFamily: 'Arial, sans-serif'
+      }}>
+        <Link to="/" style={{ marginRight: '2rem', color: '#fff', textDecoration: 'none' }}>Home</Link>
+        <Link to="/weather" style={{ marginRight: '2rem', color: '#fff', textDecoration: 'none' }}>Weather</Link>
+        <Link to="/currency" style={{ marginRight: '2rem', color: '#fff', textDecoration: 'none' }}>Currency</Link>
+      </nav>
       )}
 
       <Routes>
@@ -44,6 +50,10 @@ function App() {
       </Routes>
     </Router>
   );
+}
+
+export default App;
+
 }
 
 export default App;
