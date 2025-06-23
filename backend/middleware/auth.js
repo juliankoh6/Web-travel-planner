@@ -24,7 +24,18 @@ module.exports = function (req, res, next) {
     }
 
     req.user = decoded;
-    console.log('Authenticated user:', req.user);
+
+    // Convert iat and exp to readable format
+    const iatReadable = new Date(decoded.iat * 1000).toLocaleString();
+    const expReadable = new Date(decoded.exp * 1000).toLocaleString();
+
+    console.log('✅ Authenticated user:', {
+      id: decoded.id,
+      username: decoded.username,
+      iat: `${decoded.iat} (${iatReadable})`,
+      exp: `${decoded.exp} (${expReadable})`
+    });
+
     next();
   } catch (err) {
     console.error('Token verification failed:', err.message);
