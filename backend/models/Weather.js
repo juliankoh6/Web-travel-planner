@@ -12,6 +12,10 @@ const weatherSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true
+  },
+  fetchedAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
