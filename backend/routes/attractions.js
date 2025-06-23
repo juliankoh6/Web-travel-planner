@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const attractionApiKey = process.env.SERPAPI_KEY 
+const api_key = process.env.SERPAPI_KEY 
 
 router.get('/attractions', async (req, res) => {
   const country = req.query.country;
@@ -17,17 +17,17 @@ router.get('/attractions', async (req, res) => {
         engine: 'google',
         q: `${country} attractions`,
         google_domain: 'google.com',
-        api_key: attractionApiKey
+        api_key: api_key
       }
     });
 
-    console.log('📡 SerpAPI raw data:', JSON.stringify(response.data, null, 2));
+    console.log('SerpAPI raw data:', JSON.stringify(response.data, null, 2));
 
     const sights = response.data?.top_sights?.sights || [];
 
     res.json({ sights });
   } catch (err) {
-    console.error('❌ SerpAPI attraction fetch failed:', err.message);
+    console.error('SerpAPI attraction fetch failed:', err.message);
     res.status(200).json({ sights: [] }); 
   }
 });
