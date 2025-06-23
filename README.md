@@ -11,5 +11,5 @@ Travel Finder is a travel explorer platform designed to assist you with travelli
 
 **Contributions:**
 1. Julian Koh Chee Yong- Login and register, travel explorer page
-2. Jayashree- Check weather page
-3. Joey Wong- Convert currencies page
+2. Jayashree Elumala- Check weather page
+3. Joey Wong Yee Rou- Convert currencies page
