@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import backgroundImage from '../Assets/travel_wallpaper.jpg';
@@ -14,13 +14,6 @@ export default function Register() {
   });
 
   const [error, setError] = useState('');
-  const [registerDisabled, setRegisterDisabled] = useState(true);
-
-  useEffect(() => {
-    const { username, email, password, confirmPassword } = form;
-    const isValid = username && email && password && confirmPassword && password === confirmPassword;
-    setRegisterDisabled(!isValid);
-  }, [form]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,15 +21,33 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('http://localhost:5000/api/auth/register', form);
-      alert('✅ Registered successfully. You can now log in.');
-      navigate('/login');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed.');
-    }
-  };
+  e.preventDefault();
+  const { username, email, password, confirmPassword } = form;
+
+  // validation
+  if (!username || !email || !password || !confirmPassword) {
+    setError('All fields are required.');
+    return;
+  }
+
+  if (password.length < 6) {
+    setError('Password must be at least 6 characters.');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setError('Passwords do not match.');
+    return;
+  }
+
+  try {
+    await axios.post('http://localhost:5000/api/auth/register', form);
+    alert('✅ Registered successfully. You can now log in.');
+    navigate('/login');
+  } catch (err) {
+    setError(err.response?.data?.error || 'Registration failed.');
+  }
+};
 
   return (
     <div
@@ -106,7 +117,6 @@ export default function Register() {
 
           <button
             type="submit"
-            disabled={registerDisabled}
             style={{
               marginTop: 20,
               padding: '6px 12px',
