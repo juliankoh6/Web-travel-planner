@@ -5,7 +5,6 @@ require('dotenv').config();
 
 // Import routes from both files
 const weatherRoutes = require('./routes/weather');
-const placeRoutes = require('./routes/places'); 
 const currencyRoutes = require('./routes/currency');
 const destinationRoutes = require('./routes/destinations');
 const authRoutes = require('./routes/auth');
@@ -17,7 +16,6 @@ app.use(express.json());
 
 // Use all routes
 app.use('/api/weather', weatherRoutes);
-app.use('/api/places', placeRoutes);
 app.use('/api/currency', currencyRoutes);
 app.use('/api/destinations', destinationRoutes);
 app.use('/api/auth', authRoutes); 
