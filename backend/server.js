@@ -20,7 +20,12 @@ app.use('/api/currency', currencyRoutes);
 app.use('/api/destinations', destinationRoutes);
 app.use('/api/auth', authRoutes);
 
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+const staticPath = path.resolve(__dirname, '../frontend/build');
+app.use(express.static(staticPath));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(staticPath, 'index.html'));
+});
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
