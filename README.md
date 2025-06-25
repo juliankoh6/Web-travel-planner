@@ -6,6 +6,8 @@ youtube link: https://youtu.be/bhK7k_-PkpI
 
 npm install frontend and at backend
 
+registered test acc:  testuser1@gmail.com      test123
+
 **Group Members:**
 
 1. Julian Koh Chee Yong
