@@ -1,43 +1,48 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
+// server.js (root of your backend/)
+const express   = require('express');
+const mongoose  = require('mongoose');
+const cors      = require('cors');
+const path      = require('path');
 require('dotenv').config();
 
-// Import routes
-const weatherRoutes = require('./routes/weather');
-const currencyRoutes = require('./routes/currency');
+// Import your route modules
+const weatherRoutes     = require('./routes/weather');
+const currencyRoutes    = require('./routes/currency');
 const destinationRoutes = require('./routes/destinations');
-const authRoutes = require('./routes/auth');
+const authRoutes        = require('./routes/auth');
 
 const app = express();
+
+// 🛡️ Middlewares
 app.use(cors());
 app.use(express.json());
 
 // API routes
-app.use('/api/weather', weatherRoutes);
-app.use('/api/currency', currencyRoutes);
+app.use('/api/weather',     weatherRoutes);
+app.use('/api/currency',    currencyRoutes);
 app.use('/api/destinations', destinationRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth',        authRoutes);
 
-const staticPath = path.resolve(__dirname, '../frontend/build');
-app.use(express.static(staticPath));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(staticPath, 'index.html'));
-});
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
 
-// MongoDB + start server
+// 🔌 Connect to MongoDB & start the server
 const PORT = process.env.PORT || 5000;
-console.log("Trying to connect to MongoDB...");
+console.log('Trying to connect to MongoDB...');
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser:    true,
+  useUnifiedTopology: true,
+})
   .then(() => {
-    console.log('MongoDB Connected');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    console.log('MongoDB connected');
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
