@@ -20,15 +20,6 @@ app.use('/api/currency', currencyRoutes);
 app.use('/api/destinations', destinationRoutes);
 app.use('/api/auth', authRoutes); 
 
-app.get('/', (req, res) => {
-  res.send('🌍 Travel API is live!');
-});
-
-// health check route
-app.get('/health', (req, res) => {
-  res.send({ status: 'ok' });
-});
-
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
 console.log("Trying to connect to MongoDB...");
