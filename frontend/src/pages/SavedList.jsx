@@ -24,7 +24,8 @@ const SavedList = ({ saved, onDelete }) => {
 
   const handleSaveNote = async (id) => {
     try {
-      await axios.patch(`http://localhost:5000/api/destinations/saved/${id}/notes`, {
+      await axios.patch(`https://web-travel-planner.onrender.com/api/destinations/saved/${id}/notes`, {
+        notes: notesMap[id] || ''
         notes: notesMap[id] || ''
       });
       setEditingNoteId(null);
