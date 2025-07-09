@@ -1,6 +1,6 @@
 // frontend/src/pages/CurrencyPg.jsx
 import React, { useState, useEffect } from 'react';
-import {
+import { // import helper function
   convertCurrency,
   saveConversion,
   getSavedConversions,
@@ -9,7 +9,7 @@ import {
 } from '../api/currencyAPI';
 import './CurrencyPg.css';
 
-const CurrencyPg = () => {
+const CurrencyPg = () => { //store local state
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [amount, setAmount] = useState(1);
@@ -20,14 +20,14 @@ const CurrencyPg = () => {
   const [editId, setEditId] = useState(null);
   const [editNote, setEditNote] = useState('');
 
-  const userID = localStorage.getItem("userID");
+  const userID = localStorage.getItem("userID"); //read from localStorage
 
   useEffect(() => {
     fetchCurrencies();
     fetchSaved();
   }, []);
 
-  const fetchCurrencies = async () => {
+  const fetchCurrencies = async () => { //fetch available currency codes to populate the dropdowns
     try {
       const res = await fetch('https://web-travel-planner.onrender.com/api/currency/codes');
       const data = await res.json();
@@ -40,19 +40,19 @@ const CurrencyPg = () => {
     }
   };
 
-  const fetchSaved = async () => {
+  const fetchSaved = async () => { //fetch saved conversion
     if (!userID) return;
     const records = await getSavedConversions(userID);
     setSaved(records);
   };
 
-  const handleConvert = async () => {
+  const handleConvert = async () => { //send request to backend API to get conversion result
     if (!from || !to || !amount) return alert('Missing input');
     const data = await convertCurrency(from, to, amount);
     if (data) setResult(data);
   };
 
-  const handleSave = async () => {
+  const handleSave = async () => { //includes userid + saves conversion to db
     if (!result) return alert('Convert first before saving!');
     const data = {
       userID,
@@ -69,7 +69,7 @@ const CurrencyPg = () => {
   };
 
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id) => { //confirm deletion, removes card + call backend to delete from db
   const confirmDelete = window.confirm("Are you sure you want to delete this saved conversion?");
   if (!confirmDelete) return;
 
@@ -78,12 +78,12 @@ const CurrencyPg = () => {
 };
 
 
-  const handleEdit = (item) => {
+  const handleEdit = (item) => { //edit selected saved conversion
     setEditId(item._id);
     setEditNote(item.note || '');
   };
 
-  const handleUpdate = async (item) => {
+  const handleUpdate = async (item) => { //press ok button + call backend update new notes to db
     await updateConversion(item._id, { ...item, note: editNote });
     setEditId(null);
     setEditNote('');
@@ -139,7 +139,7 @@ const CurrencyPg = () => {
           {saved.length === 0 ? (
             <p>No saved conversions</p>
           ) : (
-            saved.map((item) => (
+            saved.map((item) => ( //display cards
               <div key={item._id} className="currency-card">
                 <h4>{item.from} → {item.to}</h4>
                 <p>{item.amount} {item.from} = {item.convertedAmount} {item.to}</p>
