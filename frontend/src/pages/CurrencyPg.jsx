@@ -29,7 +29,7 @@ const CurrencyPg = () => { //store local state
 
   const fetchCurrencies = async () => { //fetch available currency codes to populate the dropdowns
     try {
-      const res = await fetch('https://web-travel-planner.onrender.com/api/currency/codes');
+      const res = await fetch('https://web-travel-planner.onrender.com');
       const data = await res.json();
       const codes = [...new Set(data)].sort();
       setCurrencies(codes);
