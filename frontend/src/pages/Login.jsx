@@ -32,7 +32,7 @@ export default function Login({ setIsAuthenticated }) {
   }
 
   try {
-    const res = await axios.post('http://localhost:5000/api/auth/login', form);
+    const res = await axios.post('https://web-travel-planner.onrender.com/api/auth/login', form);
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('username', res.data.user.username);
     localStorage.setItem('userID', res.data.user.id);
