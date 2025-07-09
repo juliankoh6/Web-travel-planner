@@ -8,7 +8,7 @@ const Attractions = ({ country }) => {
   useEffect(() => {
     const fetchAttractions = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/attractions?country=${country}`);
+        const res = await axios.get(`https://web-travel-planner.onrender.com/api/attractions?country=${country}`);
         const sights = res.data.sights.slice(0, 6); // Only 6 results
         setAttractions(sights);
       } catch (err) {
