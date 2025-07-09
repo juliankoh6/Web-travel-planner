@@ -41,7 +41,7 @@ export default function Register() {
   }
 
   try {
-    await axios.post('http://localhost:5000/api/auth/register', form);
+    await axios.post('https://web-travel-planner.onrender.com/api/auth/register', form);
     alert('✅ Registered successfully. You can now log in.');
     navigate('/login');
   } catch (err) {
