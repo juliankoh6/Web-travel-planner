@@ -56,6 +56,7 @@ function Home() {
     reviews: place.reviews || '0',
     price: place.price || '',
     location_name: place.location_name || '',
+    address: place.address || '', 
   };
 
   try {
