@@ -21,7 +21,7 @@ app.use('/api/destinations', destinationRoutes);
 app.use('/api/auth', authRoutes); 
 
 app.get('/', (req, res) => {
-  res.send('✅ Web Travel Planner API is live!');
+  res.redirect('https://web-travel-planner-frontend.onrender.com/');
 });
 
 // Connect to MongoDB and start server
