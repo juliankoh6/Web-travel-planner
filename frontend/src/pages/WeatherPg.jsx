@@ -8,26 +8,27 @@ function WeatherPg() {
   const [error, setError] = useState('');
   const [savedWeather, setSavedWeather] = useState([]);
 
-  // 1. Load all saved entries when component mounts
+  const BASE_URL = 'https://web-travel-planner.onrender.com'; // 🔁 use this for all requests
+
+  // 1. Load all saved entries
   useEffect(() => {
     fetchSavedWeather();
   }, []);
 
   const fetchSavedWeather = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/weather');
+      const res = await axios.get(`${BASE_URL}/api/weather`);
       setSavedWeather(res.data);
     } catch (err) {
       console.error('Error fetching saved weather:', err);
     }
   };
 
-  // 2. Fetch & preview weather via your backend (does NOT save)
+  // 2. Preview weather (not saving)
   const fetchWeather = async (e) => {
     e.preventDefault();
     try {
-      // POST to /api/weather/fetch, backend uses your API key
-      const res = await axios.post('http://localhost:5000/api/weather/fetch', { city });
+      const res = await axios.post(`${BASE_URL}/api/weather/fetch`, { city });
       setWeather({
         city: res.data.city,
         temperature: res.data.temperature,
@@ -41,12 +42,11 @@ function WeatherPg() {
     }
   };
 
-  // 3. Save the currently previewed weather to MongoDB
+  // 3. Save current weather to DB
   const saveWeather = async () => {
-    if (!weather) return; // nothing to save
+    if (!weather) return;
     try {
-      // Send the same data back to your save route
-      const res = await axios.post('http://localhost:5000/api/weather/save', {
+      const res = await axios.post(`${BASE_URL}/api/weather/save`, {
         city: weather.city,
         temperature: weather.temperature,
         description: weather.description
@@ -57,10 +57,10 @@ function WeatherPg() {
     }
   };
 
-  // 4. Delete a saved entry
+  // 4. Delete entry
   const deleteWeather = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/weather/${id}`);
+      await axios.delete(`${BASE_URL}/api/weather/${id}`);
       setSavedWeather((prev) => prev.filter((item) => item._id !== id));
     } catch (err) {
       console.error('Error deleting weather:', err);
@@ -110,5 +110,4 @@ function WeatherPg() {
 }
 
 export default WeatherPg;
-
 
