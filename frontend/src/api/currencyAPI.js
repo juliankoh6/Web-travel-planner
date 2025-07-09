@@ -1,6 +1,8 @@
 // frontend/src/api/currencyAPI.js
 import axios from 'axios';
 
+const BASE_URL = 'https://web-travel-planner.onrender.com';
+
 export const convertCurrency = async (from, to, amount) => {
   try {
     const response = await axios.get(`/api/currency?from=${from}&to=${to}&amount=${amount}`);
