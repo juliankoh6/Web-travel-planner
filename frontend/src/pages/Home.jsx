@@ -16,7 +16,7 @@ function Home() {
 
   const [results, setResults] = useState([]);
   const [saved, setSaved] = useState([]);
-  const API_BASE = 'http://localhost:5000/api/destinations';
+  const API_BASE = 'https://web-travel-planner.onrender.com/api/destinations';
 
   useEffect(() => {
     const token = localStorage.getItem('token');
