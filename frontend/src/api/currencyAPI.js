@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://web-travel-planner.onrender.com/api/currency';
+const BASE_URL = 'https://web-travel-planner.onrender.com';
 
 export const convertCurrency = async (from, to, amount) => {
   try {
