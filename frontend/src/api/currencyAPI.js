@@ -1,11 +1,10 @@
-// frontend/src/api/currencyAPI.js
 import axios from 'axios';
 
-const BASE_URL = ''https://web-travel-planner.onrender.com/api/currency';
+const BASE_URL = 'https://web-travel-planner.onrender.com/api/currency'; // ✅ correct backend
 
 export const convertCurrency = async (from, to, amount) => {
   try {
-    const response = await axios.get(`/api/currency?from=${from}&to=${to}&amount=${amount}`);
+    const response = await axios.get(`${BASE_URL}?from=${from}&to=${to}&amount=${amount}`);
     return response.data;
   } catch (err) {
     console.error(err);
@@ -15,7 +14,7 @@ export const convertCurrency = async (from, to, amount) => {
 
 export const saveConversion = async (data) => {
   try {
-    const res = await axios.post('/api/currency/save', data);
+    const res = await axios.post(`${BASE_URL}/save`, data);
     return res.data;
   } catch (err) {
     console.error('Save failed', err);
@@ -25,7 +24,7 @@ export const saveConversion = async (data) => {
 
 export const getSavedConversions = async (userID) => {
   try {
-    const res = await axios.get(`/api/currency/saved?userID=${userID}`);
+    const res = await axios.get(`${BASE_URL}/saved?userID=${userID}`);
     return res.data;
   } catch (err) {
     console.error('Fetch saved failed', err);
@@ -35,7 +34,7 @@ export const getSavedConversions = async (userID) => {
 
 export const updateConversion = async (id, data) => {
   try {
-    const res = await axios.put(`/api/currency/saved/${id}`, data);
+    const res = await axios.put(`${BASE_URL}/saved/${id}`, data);
     return res.data;
   } catch (err) {
     console.error('Update failed', err);
@@ -45,7 +44,7 @@ export const updateConversion = async (id, data) => {
 
 export const deleteConversion = async (id) => {
   try {
-    await axios.delete(`/api/currency/saved/${id}`);
+    await axios.delete(`${BASE_URL}/saved/${id}`);
   } catch (err) {
     console.error('Delete failed', err);
   }
