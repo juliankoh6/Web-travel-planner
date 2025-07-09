@@ -29,7 +29,7 @@ const CurrencyPg = () => {
 
   const fetchCurrencies = async () => {
     try {
-      const res = await fetch('/api/currency/codes');
+      const res = await fetch('https://web-travel-planner.onrender.com/api/currency/codes');
       const data = await res.json();
       const codes = [...new Set(data)].sort();
       setCurrencies(codes);
